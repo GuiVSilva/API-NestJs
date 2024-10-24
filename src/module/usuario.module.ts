@@ -5,6 +5,6 @@ import { EmailValidator } from 'src/validation/email.validator';
 
 @Module({
   controllers: [UsuarioController],
-  providers: [UsuarioRepository, EmailValidator]
+  providers: [UsuarioRepository, EmailValidator],
 })
-export class UsuerioModule {}
+export class UsuarioModule {}
