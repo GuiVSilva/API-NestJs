@@ -13,12 +13,14 @@ import { UsuarioDTO } from 'src/dto/usuario.dto';
 import { UsuarioEntity } from 'src/entity/usuario.entity';
 import { UsuarioRepository } from 'src/repository/usuario.repository';
 import { v4 as uuid } from 'uuid';
+import { UsuarioService } from 'src/service/usuario.service';
 
 @Controller('/users')
 export class UsuarioController {
-  //   private userRepository = new UsuarioRepository();
-
-  constructor(private userRepository: UsuarioRepository) {}
+  constructor(
+    private userRepository: UsuarioRepository,
+    private userService: UsuarioService,
+  ) {}
 
   @Post()
   async createUser(@Body() dataUser: UsuarioDTO) {
@@ -29,18 +31,14 @@ export class UsuarioController {
     userEntity.nome = dataUser.nome;
     userEntity.id = uuid();
 
-    this.userRepository.save(userEntity);
+    this.userService.create(userEntity);
     return { id: userEntity.id, message: 'user created!' };
   }
 
   @Get()
   async listUsers() {
-    const list = await this.userRepository.list();
-    //criado um DTO para a lista para retornar apenas o id e nome
-    const listUser = list.map(
-      (usuario) => new ListaUsuarioDTO(usuario.id, usuario.nome),
-    );
-    return listUser;
+    const list = await this.userService.listaUsuarios();
+    return list;
   }
 
   @Put('/:id')
@@ -48,7 +46,7 @@ export class UsuarioController {
     @Param('id') id: string,
     @Body() newDataUser: AtualizaUsuarioDTO,
   ) {
-    const update = await this.userRepository.update(id, newDataUser);
+    const update = await this.userService.update(id, newDataUser);
     return {
       usuario: update,
       message: 'user updated!',
@@ -57,7 +55,7 @@ export class UsuarioController {
 
   @Delete('/:id')
   async deleteUser(@Param('id') id: string) {
-    const deleteUser = await this.userRepository.remove(id);
+    const deleteUser = await this.userService.delete(id);
     return {
       deleteUser: deleteUser,
       message: 'user deleted!',
