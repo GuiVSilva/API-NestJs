@@ -29,4 +29,7 @@ export class UsuarioEntity {
 
   @DeleteDateColumn()
   deleted_at: Date;
+
+  @Column({ type: 'boolean', default: true, nullable: false })
+  active: boolean;
 }
